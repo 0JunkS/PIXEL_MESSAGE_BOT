@@ -1,0 +1,89 @@
+name: Build and Release Android APK/AAB
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: '릴리즈 버전 태그 (예: v1.0.0)'
+        required: false
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build APK & AAB
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make Gradlew Executable
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Build Release APK and AAB Bundle
+        run: ./gradlew assembleRelease bundleRelease --stacktrace
+
+      - name: Prepare Artifacts with Friendly Names
+        run: |
+          mkdir -p build_output
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            cp app/build/outputs/apk/release/app-release.apk build_output/PixelBot-release.apk
+          fi
+          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
+            cp app/build/outputs/apk/debug/app-debug.apk build_output/PixelBot-debug.apk
+          fi
+          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
+            cp app/build/outputs/bundle/release/app-release.aab build_output/PixelBot-release.aab
+          fi
+
+      - name: Upload Artifacts to GitHub Actions Run
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelBot-Android-Builds
+          path: build_output/*
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: ${{ github.ref_name || github.event.inputs.version_tag || 'v1.0.0' }}
+          name: PixelBot 릴리즈 ${{ github.ref_name || github.event.inputs.version_tag || 'v1.0.0' }}
+          body: |
+            ## 🚀 PixelBot (화면 감시 메신저봇) 릴리즈
+            
+            카카오톡 화면 텍스트를 실시간 감지하여 자동 응답하는 화면 감시형 메신저봇입니다.
+            
+            ### ✨ 주요 기능
+            - **노코드 매크로 엔진**: `!고승현` 입력 시 `나는 고승현이다` 자동 전송 및 다양한 동적 템플릿 지원
+            - **JavaScript 스크립팅 엔진**: Rhino 기반 메신저봇R 호환 `response(room, msg, sender, ...)` 지원
+            - **실시간 화면 감지 (접근성 서비스)**: 카카오톡 화면을 보고 있을 때 배터리 소모 없이 화면의 텍스트 노드를 실시간 감지 & 자동 전송
+            - **백그라운드 지속 실행**: Foreground Service 탑재 및 배터리 절전 예외 가이드
+            
+            ### 📦 다운로드 및 설치
+            - **직접 스마트폰에 설치할 경우**: 아래 Assets에서 **`PixelBot-release.apk`** 또는 **`PixelBot-debug.apk`**를 다운로드하여 설치하세요.
+            - **구글 플레이 등에 등록할 경우**: **`PixelBot-release.aab`** 파일을 사용하세요.
+          files: |
+            build_output/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

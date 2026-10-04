@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark & Cyberpunk/Neon Palette -->
+    <color name="bg_primary">#0F1117</color>
+    <color name="bg_secondary">#181B24</color>
+    <color name="bg_card">#202430</color>
+    <color name="bg_card_stroke">#2F3647</color>
+
+    <color name="accent_primary">#6C5CE7</color>
+    <color name="accent_secondary">#00CEC9</color>
+    <color name="accent_warning">#FFA801</color>
+    <color name="accent_danger">#FF5252</color>
+    <color name="accent_success">#05C46B</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9DA5B4</color>
+    <color name="text_muted">#5C6370</color>
+
+    <color name="kakao_yellow">#FEE500</color>
+    <color name="kakao_brown">#191919</color>
+
+    <color name="code_bg">#141720</color>
+    <color name="code_line">#282C34</color>
+</resources>
