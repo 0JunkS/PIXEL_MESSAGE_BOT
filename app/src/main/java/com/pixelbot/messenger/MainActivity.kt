@@ -91,8 +91,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openAccessibilitySettings() {
-        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        startActivity(intent)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && !isAccessibilityServiceEnabled()) {
+            androidx.appcompat.app.AlertDialog.Builder(this, R.style.Theme_PixelMessengerBot)
+                .setTitle("⚠️ 안드로이드 13/14+ 권한 안내")
+                .setMessage("스마트폰 보안 정책상 외부 설치 앱은 접근성이 '제한된 설정'으로 막힐 수 있습니다.\n\n" +
+                            "만약 접근성 스위치가 회색으로 눌리지 않는다면:\n" +
+                            "1. 스마트폰 [설정] ➡️ [애플리케이션] ➡️ [PixelBot]\n" +
+                            "2. 우측 상단 [⋮ 점 3개] ➡️ [제한된 설정 허용] 터치\n" +
+                            "3. 그 후 접근성을 켜주시면 됩니다!")
+                .setPositiveButton("접근성 설정 열기") { _, _ ->
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    startActivity(intent)
+                }
+                .setNeutralButton("앱 정보 열기") { _, _ ->
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = android.net.Uri.parse("package:$packageName")
+                    }
+                    startActivity(intent)
+                }
+                .setNegativeButton("취소", null)
+                .show()
+        } else {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
+        }
     }
 
     private fun isAccessibilityServiceEnabled(): Boolean {

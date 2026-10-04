@@ -137,10 +137,21 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/chipCount"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="{count} (n일차)"
+                android:textColor="@color/kakao_yellow"
+                android:textSize="10sp"
+                app:strokeColor="@color/kakao_yellow" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/chipRandom"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
+                android:layout_marginStart="6dp"
                 android:text="{random:1..6}"
                 android:textSize="10sp"
                 app:strokeColor="@color/accent_secondary" />
@@ -151,17 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_marginStart="6dp"
-                android:text="{time:HH:mm:ss}"
-                android:textSize="10sp"
-                app:strokeColor="@color/accent_secondary" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/chipSender"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginStart="6dp"
-                android:text="{sender}"
+                android:text="{time:HH:mm}"
                 android:textSize="10sp"
                 app:strokeColor="@color/accent_secondary" />
         </LinearLayout>

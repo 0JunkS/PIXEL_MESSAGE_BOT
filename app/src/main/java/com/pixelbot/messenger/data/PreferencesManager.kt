@@ -62,10 +62,10 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
         if (!prefs.contains(KEY_MACRO_RULES)) {
             val defaultRules = listOf(
                 MacroRule(
-                    name = "고승현 트리거",
+                    name = "고승현 n일차 트리거",
                     trigger = "!고승현",
                     matchType = MatchType.EXACT,
-                    response = "나는 고승현이다",
+                    response = "고승현 되기 {count}일차",
                     isEnabled = true
                 ),
                 MacroRule(
@@ -132,4 +132,18 @@ function response(room, msg, sender, isGroupChat, replier, imageDB, packageName)
     var targetPackage: String
         get() = prefs.getString(KEY_TARGET_PACKAGE, "com.kakao.talk") ?: "com.kakao.talk"
         set(value) = prefs.edit().putString(KEY_TARGET_PACKAGE, value).apply()
+
+    @Synchronized
+    fun getNextCounter(counterName: String, initial: Int = 1): Int {
+        val key = "counter_$counterName"
+        val current = prefs.getInt(key, initial - 1)
+        val next = current + 1
+        prefs.edit().putInt(key, next).apply()
+        return next
+    }
+
+    fun resetCounter(counterName: String, value: Int = 0) {
+        val key = "counter_$counterName"
+        prefs.edit().putInt(key, value).apply()
+    }
 }

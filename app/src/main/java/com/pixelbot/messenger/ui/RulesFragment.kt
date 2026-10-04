@@ -85,14 +85,14 @@ class RulesFragment : Fragment() {
         }
 
         // Tag insertion helper chips
+        dialogBinding.chipCount.setOnClickListener {
+            dialogBinding.etResponse.append("{count}")
+        }
         dialogBinding.chipRandom.setOnClickListener {
             dialogBinding.etResponse.append("{random:1..6}")
         }
         dialogBinding.chipTime.setOnClickListener {
-            dialogBinding.etResponse.append("{time:HH:mm:ss}")
-        }
-        dialogBinding.chipSender.setOnClickListener {
-            dialogBinding.etResponse.append("{sender}")
+            dialogBinding.etResponse.append("{time:HH:mm}")
         }
 
         dialogBinding.btnCancel.setOnClickListener {

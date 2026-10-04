@@ -45,6 +45,17 @@ class JsEngine {
             })
             ScriptableObject.putProperty(scope, "replier", Context.javaToJS(replier, scope))
 
+            // Counter object for auto-incrementing variables in JS
+            val counterBridge = object {
+                fun next(name: String = "default", initial: Int = 1): Int {
+                    return com.pixelbot.messenger.PixelBotApplication.instance.prefs.getNextCounter(name, initial)
+                }
+                fun reset(name: String = "default", value: Int = 0) {
+                    com.pixelbot.messenger.PixelBotApplication.instance.prefs.resetCounter(name, value)
+                }
+            }
+            ScriptableObject.putProperty(scope, "Counter", Context.javaToJS(counterBridge, scope))
+
             // Console mock
             val consoleMock = object {
                 fun log(vararg args: Any?) {
