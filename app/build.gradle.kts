@@ -17,16 +17,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            // Self-signing for direct APK installation from GitHub Release
-            storeFile = file("debug.keystore")
-            storePassword = "androiddebugkey"
-            keyAlias = "androiddebugkey"
-            keyPassword = "androiddebugkey"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -34,7 +24,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             signingConfig = signingConfigs.getByName("debug")
